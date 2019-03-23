@@ -1,18 +1,19 @@
 from keras import Sequential
 from keras.datasets import mnist
 import numpy as np
-import matplotlib
-matplotlib.use("TkAgg")
-from matplotlib import pyplot as plt
-
+import matplotlib.pyplot as plt
 from keras.layers import Dense
 from keras.utils import to_categorical
 
 (train_images,train_labels),(test_images, test_labels) = mnist.load_data()
 #display the first image in the training data
-plt.imshow(train_images[0,:,:],cmap='gray')
-plt.title('Ground Truth : {}'.format(train_labels[0]))
+#plt.imshow(train_images[0,:,:],cmap='gray')
+#plt.title('Ground Truth : {}'.format(train_labels[0]))
 # plt.show()
+
+plt.imshow(test_images[0,:,:],cmap='gray')
+plt.show()
+
 
 #process the data
 #1. convert each image of shape 28*28 to 784 dimensional which will be fed to the network as a single feature
@@ -34,13 +35,11 @@ test_labels_one_hot = to_categorical(test_labels)
 model = Sequential()
 model.add(Dense(512, activation='relu', input_shape=(dimData,)))
 model.add(Dense(512, activation='relu'))
-model.add(Dense(24, activation='tanh'))
 model.add(Dense(10, activation='softmax'))
 
 model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-history = model.fit(train_data, train_labels_one_hot, batch_size=256, epochs=20, verbose=1,
+history = model.fit(train_data, train_labels_one_hot, batch_size=256, epochs=5, verbose=1,
                    validation_data=(test_data, test_labels_one_hot))
 
 [test_loss, test_acc] = model.evaluate(test_data, test_labels_one_hot)
-print("Evaluation result on Test Data : Loss = {}, accuracy = {}".format(test_loss, test_acc))
-
+print(model.predict_classes(test_data[[0],:]))
